@@ -1,14 +1,6 @@
 const yargs = require("yargs");
 const contacts = require("./contacts");
 
-// const testContacts = async () => {
-//   await contacts.addContact("Valerchik", "Valerchik@mail.com", 0876655432);
-
-//   await contacts.getContactById(11);
-
-//   await contacts.removeContact(11);
-// };
-
 yargs
   .number("id")
   .string("name")

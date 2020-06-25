@@ -1,8 +1,7 @@
-global.rootPath = __dirname;
 const fs = require("fs").promises;
 const path = require("path");
 
-const contactsPath = path.join(rootPath, "db", "contacts.json");
+const contactsPath = path.join(__dirname, "db", "contacts.json");
 
 class Contact {
   constructor({ name, email, phone }, id) {
