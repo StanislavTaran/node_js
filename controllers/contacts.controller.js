@@ -30,10 +30,15 @@ const addContact = async (req, res) => {
     : res.status(500).json({ message: "Error" });
 };
 
-// todo пофиксить
+// todo the/catch обработать ошибки
 const updateContact = async (req, res) => {
   const newContactFields = req.body;
-  const id = req.params;
+  const { id } = req.params;
+  const result = await contactsModel.updateContact(id, newContactFields);
+
+  !result
+    ? res.status(404).json({ message: "Contact not found" })
+    : res.status(200).json(result);
 };
 
 module.exports = {

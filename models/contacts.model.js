@@ -30,7 +30,7 @@ const getContactById = async (contactId) => {
   const allContacts = await getListContacts();
   const foundContact = allContacts.find((contact) => contact.id === +contactId);
 
-  return allContacts.find((contact) => contact.id === +contactId);
+  return foundContact;
 };
 
 const removeContact = async (contactId) => {
@@ -72,23 +72,18 @@ const addContact = async (name, email, phone) => {
 };
 
 const updateContact = async (id, value) => {
-  const allContacts = await getListContacts();
-  const targetContact = await getContactById(id);
-  let contactWithChange;
+  const contacts = (await getListContacts()) || [];
+  const contact = (await getContactById(id)) || null;
 
-  if (!!targetContact) {
-    contactWithChange = { ...targetContact, ...value };
-    const updatedContacts = allContacts.map((contact) =>
-      contact.id !== id ? contact : contactWithChange
+  if (contact) {
+    const newContact = { ...contact, ...value };
+    const newContacts = contacts.map((contact) =>
+      contact.id !== newContact.id ? contact : newContact
     );
-    await fs
-      .writeFile(contactsPath, updatedContacts)
-      .then(() => console.log("contact has been updated!"))
-      .catch((error) => {
-        throw error;
-      });
+
+    await fs.writeFile(contactsPath, JSON.stringify(newContacts));
+    return newContact;
   }
-  return contactWithChange;
 };
 
 module.exports = {
