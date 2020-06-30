@@ -1,5 +1,6 @@
 const fs = require("fs").promises;
 const path = require("path");
+const { error } = require("console");
 
 const contactsPath = path.join(__dirname, "db", "contacts.json");
 
@@ -12,12 +13,10 @@ class Contact {
   }
 }
 
-const listContacts = async () => {
+const getListContacts = async () => {
   const contacts = await fs
     .readFile(contactsPath, "utf-8")
     .then((res) => {
-      console.log("\x1B[32m Contacts have been received! \x1b[0m");
-      console.table(JSON.parse(res));
       return JSON.parse(res);
     })
     .catch((error) => {
@@ -30,13 +29,6 @@ const listContacts = async () => {
 const getContactById = async (contactId) => {
   const allContacts = await listContacts();
   const foundContact = allContacts.find((contact) => contact.id === contactId);
-
-  console.log(
-    foundContact
-      ? `\x1B[32m Contact (${foundContact.name}) found! \x1b[0m `
-      : `\x1B[31m Contact not found! \x1b[0m`,
-    foundContact ? foundContact : ""
-  );
 
   return allContacts.find((contact) => contact.id === contactId);
 };
@@ -58,6 +50,8 @@ const removeContact = async (contactId) => {
         throw error;
       });
   } else console.log(`\x1B[31m Contact not found! \x1b[0m`);
+
+  return !foundContact;
 };
 
 const addContact = async (name, email, phone) => {
@@ -67,17 +61,38 @@ const addContact = async (name, email, phone) => {
   allContacts.push(createdContact);
   await fs
     .writeFile(contactsPath, JSON.stringify(allContacts))
-    .then(() =>
-      console.log(`\x1B[32m Added contact ${name}! \x1b[0m`, createdContact)
-    )
+    .then(() => {
+      console.log(`\x1B[32m Added contact ${name}! \x1b[0m`, createdContact);
+      return createdContact;
+    })
     .catch((error) => {
       throw error;
     });
 };
 
+const updateContact = async (id, value) => {
+  const contacts = (await getListContacts()) || [];
+  const contact = (await getContactById(id)) || null;
+
+  if (contact) {
+    const contactWithChanges = { ...contact, ...value };
+    const newContacts = contacts.map((item) =>
+      item.id !== contactWithChanges.id ? item : contactWithChanges
+    );
+
+    await fs
+      .writeFile(contactsPath, JSON.stringify(newContacts))
+      .then(() => contactWithChanges)
+      .catch((error) => {
+        throw error;
+      });
+  }
+};
+
 module.exports = {
-  listContacts,
+  getListContacts,
   getContactById,
   removeContact,
   addContact,
+  updateContact,
 };
