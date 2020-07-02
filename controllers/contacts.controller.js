@@ -30,7 +30,6 @@ const addContact = async (req, res) => {
     : res.status(500).json({ message: "Error" });
 };
 
-// todo then/catch обработать ошибки
 const updateContact = async (req, res) => {
   const newContactFields = req.body;
   const { id } = req.params;

@@ -22,5 +22,5 @@ app.use(express.json());
 app.use("/api/contacts", contactsRouter);
 
 app.listen(3000, () =>
-  console.log(`\x1B[34m Server listening on port: 3000 \x1b[0m`)
+  console.log(`\x1B[33m Server listening on port: 3000 \x1b[0m`)
 );

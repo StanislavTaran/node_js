@@ -1,6 +1,5 @@
 const fs = require("fs").promises;
 const path = require("path");
-const { error } = require("console");
 
 const contactsPath = path.join(ROOT_PATH, "db", "contacts.json");
 
