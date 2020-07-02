@@ -26,7 +26,7 @@ const addContact = async (req, res) => {
 
   const addedContact = await contactsModel.addContact(name, email, phone);
   addedContact
-    ? res.status(201).json({ message: `Contact succesful added!` })
+    ? res.status(201).json(addedContact)
     : res.status(500).json({ message: "Error" });
 };
 

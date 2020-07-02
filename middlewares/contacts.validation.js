@@ -1,7 +1,11 @@
 const Joi = require("@hapi/joi");
 
 const createContactSchema = Joi.object({
-  name: Joi.string().min(2).max(20).alphanum().required(),
+  name: Joi.string()
+    .min(2)
+    .max(20)
+    .pattern(/^[a-zA-Zа-яА-Я'][a-zA-Zа-яА-Я-' ]+[a-zA-Zа-яА-Я']?$/u)
+    .required(),
 
   email: Joi.string()
     .email({
@@ -9,17 +13,22 @@ const createContactSchema = Joi.object({
       tlds: { allow: ["com", "ru", "ua", "net"] },
     })
     .required(),
-  phone: Joi.string().pattern(new RegExp("^[0-9]{8,16}$")).required(),
+  phone: Joi.string()
+    .pattern(/^[0-9]+$/, { name: "phone number" })
+    .required(),
 });
 
 const UpdateContactSchema = Joi.object({
-  name: Joi.string().min(2).max(20).alphanum(),
+  name: Joi.string()
+    .min(2)
+    .max(20)
+    .pattern(/^[a-zA-Zа-яА-Я'][a-zA-Zа-яА-Я-' ]+[a-zA-Zа-яА-Я']?$/u),
 
   email: Joi.string().email({
     minDomainSegments: 2,
     tlds: { allow: ["com", "ru", "ua", "net"] },
   }),
-  phone: Joi.string().pattern(new RegExp("^[0-9]{8,16}$")),
+  phone: Joi.string().pattern(/^[0-9]+$/, { name: "phone number" }),
 });
 
 const validate = async (schema, data) => {
@@ -27,7 +36,7 @@ const validate = async (schema, data) => {
   if (error) {
     const message = error.details.reduce((message, item) => {
       if (message) return `${message}, ${item.message}`;
-      return `${message}`;
+      return `${item.message}`;
     }, "");
     throw new Error(message);
   }
@@ -38,7 +47,7 @@ const validateCreateContactMiddleware = async (req, res, next) => {
     await validate(createContactSchema, req.body);
     next();
   } catch (e) {
-    res.status(400).send(e.message);
+    res.status(400).send({ message: e.message });
     res.end();
     return;
   }
@@ -49,7 +58,7 @@ const validateUpdateContactMiddleware = async (req, res, next) => {
     await validate(UpdateContactSchema, req.body);
     next();
   } catch (e) {
-    res.status(400).send(e.message);
+    res.status(400).send({ message: e.message });
     res.end();
     return;
   }
