@@ -1,17 +1,29 @@
-# node_js
+# REST API for Phonebook
 
-## Получения списка всех контактов
+## @ GET /api/contacts
 
-![GET CONTACTS](http://dl4.joxi.net/drive/2020/06/23/0043/3082/2874378/78/ac72dbf7b6.jpg)​
+- возвращает массив всех контактов в json-формате со статусом 200
 
-## Получения контакта по ID
+## @ GET /api/contacts/:contactId
 
-![GET CONTACT BY ID](http://dl3.joxi.net/drive/2020/06/23/0043/3082/2874378/78/3b469c042a.jpg)​
+- Получает параметр contactId
+- возвращает обьект контакта в json-формате со статусом 200
+- если такого id нет, возвращает json с ключом "message": "Not found" и статусом 404
 
-## Добавление контакта
+## @ POST /api/contacts
 
-![ADD CONTACT](http://dl4.joxi.net/drive/2020/06/23/0043/3082/2874378/78/fca149e2a8.jpg)​
+- Если в body нет каких-то обязательных полей, возарщает json с ключом {"message": "missing required name field"} и статусом 400
+- Если с body все хорошо, добавляет уникальный идентификатор в обьект контакта
+- возвращает обьект с добавленным id {id, name, email, phone} и статусом 201
 
-## Удаление контакта
+## @ DELETE /api/contacts/:contactId
 
-![REMOVE CONTACT](http://dl4.joxi.net/drive/2020/06/23/0043/3082/2874378/78/b011f262d2.jpg)​
+- Получает параметр contactId
+- если такой id есть, возвращает json формата {"message": "Contact succesful deleted!"} и статусом 200
+- если такого id нет, возвращает json с ключом {"message": "Contact not found!"} и статусом 404
+
+## @ PATCH /api/contacts/:contactId
+
+- Получает body в json-формате c обновлением любых полей name, email и phone
+- Если body нет, возарщает json с ключом {"message": "missing fields"} и статусом 400
+- По результату работы функции возвращает обновленный обьект контакта и статусом 200. В противном случае, возвращает json с ключом "message": "Not found" и статусом 404

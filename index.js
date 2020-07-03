@@ -1,38 +1,26 @@
-const yargs = require("yargs");
-const contacts = require("./contacts");
+global.ROOT_PATH = __dirname;
+const path = require("path");
+const express = require("express");
+const cors = require("cors");
+const morgan = require("morgan");
+const contactsRouter = require(path.join(
+  ROOT_PATH,
+  "routes",
+  "contacts.router"
+));
 
-yargs
-  .number("id")
-  .string("name")
-  .string("email")
-  .string("phone")
-  .string("action")
-  .alias("action", "a")
-  .alias("name", "n")
-  .alias("email", "e")
-  .alias("phone", "p").argv;
+const app = express();
 
-const invokeAction = ({ action, id, name, email, phone }) => {
-  switch (action) {
-    case "list":
-      contacts.listContacts();
-      break;
+app.use(cors());
 
-    case "get":
-      contacts.getContactById(id);
-      break;
+app.use(morgan("tiny"));
 
-    case "add":
-      contacts.addContact(name, email, phone);
-      break;
+app.use("/", express.static("public"));
 
-    case "remove":
-      contacts.removeContact(id);
-      break;
+app.use(express.json());
 
-    default:
-      console.warn("\x1B[31m Unknown action type! \x1b[0m");
-  }
-};
+app.use("/api/contacts", contactsRouter);
 
-invokeAction(yargs.argv);
+app.listen(3000, () =>
+  console.log(`\x1B[33m Server listening on port: 3000 \x1b[0m`)
+);
