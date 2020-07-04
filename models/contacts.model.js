@@ -1,7 +1,7 @@
 const fs = require("fs").promises;
 const path = require("path");
 
-const contactsPath = path.join(ROOT_PATH, "db", "contacts.json");
+const contactsPath = require("../db/contacts.json");
 
 class Contact {
   constructor({ name, email, phone }, id) {

@@ -1,13 +1,8 @@
-global.ROOT_PATH = __dirname;
 const path = require("path");
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
-const contactsRouter = require(path.join(
-  ROOT_PATH,
-  "routes",
-  "contacts.router"
-));
+const contactsRouter = require("./routes/contacts.router");
 
 const app = express();
 
