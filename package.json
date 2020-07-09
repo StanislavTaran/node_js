@@ -4,8 +4,8 @@
   "description": "node practice",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon node index.js"
+    "start": "node server.js",
+    "dev": "nodemon node server.js"
   },
   "repository": {
     "type": "git",
@@ -29,8 +29,10 @@
   "dependencies": {
     "@hapi/joi": "^17.1.1",
     "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "fs": "0.0.1-security",
+    "mongoose": "^5.9.22",
     "morgan": "^1.10.0"
   }
 }
