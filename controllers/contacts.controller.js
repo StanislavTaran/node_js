@@ -7,7 +7,7 @@ const getAllContacts = async (req, res) => {
 
 const getContactById = async (req, res) => {
   const { id } = req.params;
-  const foundContact = await contactsModel.getContactById(+id);
+  const foundContact = await contactsModel.getContactById(id);
   foundContact
     ? res.status(200).json(foundContact)
     : res.status(404).json({ message: "Contact not found!" });
@@ -15,7 +15,7 @@ const getContactById = async (req, res) => {
 
 const deleteContact = async (req, res) => {
   const { id } = req.params;
-  const deletedContact = await contactsModel.removeContact(+id);
+  const deletedContact = await contactsModel.removeContact(id);
   deletedContact
     ? res.status(200).json({ message: `Contact succesful deleted!` })
     : res.status(404).json({ message: "Contact not found!" });

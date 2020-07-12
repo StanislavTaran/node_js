@@ -1,4 +1,5 @@
 const Joi = require("@hapi/joi");
+const { allow } = require("@hapi/joi");
 
 const createContactSchema = Joi.object({
   name: Joi.string()
@@ -13,9 +14,13 @@ const createContactSchema = Joi.object({
       tlds: { allow: ["com", "ru", "ua", "net"] },
     })
     .required(),
+
   phone: Joi.string()
     .pattern(/^[0-9]+$/, { name: "phone number" })
     .required(),
+
+  subscription: Joi.string().allow("free", "pro", "premium"),
+  passsword: Joi.string().min(8).max(24).required(),
 });
 
 const UpdateContactSchema = Joi.object({
@@ -29,6 +34,8 @@ const UpdateContactSchema = Joi.object({
     tlds: { allow: ["com", "ru", "ua", "net"] },
   }),
   phone: Joi.string().pattern(/^[0-9]+$/, { name: "phone number" }),
+  subscription: Joi.string().allow("free", "pro", "premium"),
+  passsword: Joi.string().min(8).max(24),
 });
 
 const validate = async (schema, data) => {

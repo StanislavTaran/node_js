@@ -20,6 +20,17 @@ const contactSchema = mongoose.Schema(
       required: true,
       trim: true,
     },
+    password: {
+      type: String,
+      required: true,
+      trim: true,
+      select: false,
+    },
+    subscription: {
+      type: String,
+      default: "free",
+      trim: true,
+    },
   },
   { versionKey: false }
 );
@@ -30,7 +41,7 @@ class Contact {
   }
 
   getListContacts = async (query = {}) => {
-    return await this.contact.find(query);
+    return await this.contact.aggregate([{ $unset: ["password"] }]);
   };
 
   getContactById = async (contactId) => {
