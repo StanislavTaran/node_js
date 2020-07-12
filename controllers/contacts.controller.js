@@ -1,35 +1,57 @@
 const contactsModel = require("../models/contacts.model");
 
 const getAllContacts = async (req, res) => {
-  const allContacts = await contactsModel.getListContacts();
-  res.status(200).json(allContacts);
+  try {
+    const allContacts = await contactsModel.getListContacts();
+    allContacts
+      ? res.status(200).json(allContacts)
+      : res.status(500).json(allContacts);
+  } catch (error) {
+    res.status(400).json(error);
+  }
 };
 
 const getContactById = async (req, res) => {
   const { id } = req.params;
-  const foundContact = await contactsModel.getContactById(id);
-  foundContact
-    ? res.status(200).json(foundContact)
-    : res.status(404).json({ message: "Contact not found!" });
+  try {
+    const foundContact = await contactsModel.getContactById(id);
+    foundContact
+      ? res.status(200).json(foundContact)
+      : res.status(404).json({ message: "Contact not found!" });
+  } catch (error) {
+    res.status(400).json(error);
+  }
 };
 
 const deleteContact = async (req, res) => {
   const { id } = req.params;
-  const deletedContact = await contactsModel.removeContact(id);
-  deletedContact
-    ? res.status(200).json({ message: `Contact succesful deleted!` })
-    : res.status(404).json({ message: "Contact not found!" });
+  try {
+    const deletedContact = await contactsModel.removeContact(id);
+    console.log(deleteContact);
+    deletedContact
+      ? res.status(200).json({ message: `Contact succesful deleted!` })
+      : res.status(404).json({ message: "Contact not found!" });
+  } catch (error) {
+    res.status(400).json(error);
+  }
 };
 
 const addContact = async (req, res) => {
   const contact = req.body;
+  try {
+    const addedContact = await contactsModel.addContact(contact);
+    addedContact
+      ? res.status(201).json(addedContact)
+      : res
+          .status(500)
+          .json({ message: "Something went wrong, please try later." });
+  } catch (error) {
+    if (error.name === "MongoError" && error.code === 11000) {
+      return res.status(422).send({ succes: false, error });
+    }
 
-  const addedContact = await contactsModel.addContact(contact, res);
-  addedContact
-    ? res.status(201).json(addedContact)
-    : res
-        .status(500)
-        .json({ message: "Something went wrong, please try later." });
+    return res.status(400).json(error);
+  }
 };
 
 const updateContact = async (req, res) => {
@@ -38,12 +60,20 @@ const updateContact = async (req, res) => {
 
   if (!newContactFields) {
     return res.status(400).json({ message: "missing fields" });
-  } else {
-    const result = await contactsModel.updateContact(id, newContactFields, res);
+  }
+
+  try {
+    const result = await contactsModel.updateContact(id, newContactFields);
 
     !result
       ? res.status(404).json({ message: "Contact not found" })
       : res.status(200).json(result);
+  } catch (error) {
+    if (error.name === "MongoError" && error.code === 11000) {
+      return res.status(422).send({ succes: false, error });
+    }
+
+    return res.status(400).json(error);
   }
 };
 

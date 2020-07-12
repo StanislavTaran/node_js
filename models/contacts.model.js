@@ -50,36 +50,47 @@ class Contact {
   };
 
   getContactById = async (contactId) => {
-    return ObjectId.isValid(contactId)
-      ? await this.contact.findById(contactId)
-      : null;
+    if (ObjectId.isValid(contactId)) {
+      return await this.contact
+        .findById(contactId)
+        .then((res) => res)
+        .catch((err) => {
+          throw err;
+        });
+    }
+    throw { message: "Invalid contact id" };
   };
 
   removeContact = async (contactId) => {
-    return ObjectId.isValid(contactId)
-      ? await this.contact.findByIdAndDelete(contactId)
-      : null;
+    if (ObjectId.isValid(contactId)) {
+      return await this.contact
+        .findByIdAndDelete(contactId)
+        .then((res) => res)
+        .catch((err) => {
+          console.log(err);
+          throw err;
+        });
+    }
+    throw { message: "Invalid contact id" };
   };
 
-  addContact = async (contact, res) => {
+  addContact = async (contact) => {
     return await this.contact
       .create(contact)
       .then((docs) => docs)
       .catch((error) => {
-        res.status(400).json(error);
-        res.end();
+        throw error;
       });
   };
 
-  updateContact = async (contactId, newData, res) => {
+  updateContact = async (contactId, newData) => {
     return await this.contact
       .findByIdAndUpdate(contactId, newData, {
         new: true,
       })
       .then((docs) => docs)
       .catch((error) => {
-        res.status(400).json(error);
-        res.end();
+        throw error;
       });
   };
 }
