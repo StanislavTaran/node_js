@@ -20,7 +20,8 @@ const createContactSchema = Joi.object({
     .required(),
 
   subscription: Joi.string().allow("free", "pro", "premium"),
-  passsword: Joi.string().min(8).max(24).required(),
+  password: Joi.string().min(8).max(24).required(),
+  token: Joi.string().max(100).empty("").default(""),
 });
 
 const UpdateContactSchema = Joi.object({
@@ -35,7 +36,8 @@ const UpdateContactSchema = Joi.object({
   }),
   phone: Joi.string().pattern(/^[0-9]+$/, { name: "phone number" }),
   subscription: Joi.string().allow("free", "pro", "premium"),
-  passsword: Joi.string().min(8).max(24),
+  password: Joi.string().min(8).max(24),
+  token: Joi.string().max(100).empty("").default(""),
 });
 
 const validate = async (schema, data) => {

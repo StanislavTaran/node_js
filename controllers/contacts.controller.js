@@ -22,12 +22,14 @@ const deleteContact = async (req, res) => {
 };
 
 const addContact = async (req, res) => {
-  const { name, email, phone } = req.body;
+  const contact = req.body;
 
-  const addedContact = await contactsModel.addContact(name, email, phone);
+  const addedContact = await contactsModel.addContact(contact, res);
   addedContact
     ? res.status(201).json(addedContact)
-    : res.status(500).json({ message: "Error" });
+    : res
+        .status(500)
+        .json({ message: "Something went wrong, please try later." });
 };
 
 const updateContact = async (req, res) => {
@@ -37,7 +39,7 @@ const updateContact = async (req, res) => {
   if (!newContactFields) {
     return res.status(400).json({ message: "missing fields" });
   } else {
-    const result = await contactsModel.updateContact(id, newContactFields);
+    const result = await contactsModel.updateContact(id, newContactFields, res);
 
     !result
       ? res.status(404).json({ message: "Contact not found" })

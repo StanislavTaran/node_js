@@ -6,6 +6,7 @@ const contactSchema = mongoose.Schema(
     name: {
       type: String,
       required: true,
+      unique: true,
       minlength: 2,
       maxlength: 20,
     },
@@ -31,6 +32,10 @@ const contactSchema = mongoose.Schema(
       default: "free",
       trim: true,
     },
+    token: {
+      type: String,
+      trim: true,
+    },
   },
   { versionKey: false }
 );
@@ -40,8 +45,8 @@ class Contact {
     this.contact = mongoose.model("Contact", contactSchema);
   }
 
-  getListContacts = async (query = {}) => {
-    return await this.contact.aggregate([{ $unset: ["password"] }]);
+  getListContacts = async () => {
+    return (await this.contact.aggregate([{ $unset: ["password"] }])) || null;
   };
 
   getContactById = async (contactId) => {
@@ -56,14 +61,26 @@ class Contact {
       : null;
   };
 
-  addContact = async (contact) => {
-    return await this.contact.create(contact);
+  addContact = async (contact, res) => {
+    return await this.contact
+      .create(contact)
+      .then((docs) => docs)
+      .catch((error) => {
+        res.status(400).json(error);
+        res.end();
+      });
   };
 
-  updateContact = async (contactId, newData) => {
-    return await this.contact.findByIdAndUpdate(contactId, newData, {
-      new: true,
-    });
+  updateContact = async (contactId, newData, res) => {
+    return await this.contact
+      .findByIdAndUpdate(contactId, newData, {
+        new: true,
+      })
+      .then((docs) => docs)
+      .catch((error) => {
+        res.status(400).json(error);
+        res.end();
+      });
   };
 }
 
