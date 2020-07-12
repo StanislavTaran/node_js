@@ -1,5 +1,5 @@
-const Joi = require("@hapi/joi");
-const { allow } = require("@hapi/joi");
+const Joi = require('@hapi/joi');
+const { allow } = require('@hapi/joi');
 
 const createContactSchema = Joi.object({
   name: Joi.string()
@@ -11,17 +11,17 @@ const createContactSchema = Joi.object({
   email: Joi.string()
     .email({
       minDomainSegments: 2,
-      tlds: { allow: ["com", "ru", "ua", "net"] },
+      tlds: { allow: ['com', 'ru', 'ua', 'net'] },
     })
     .required(),
 
   phone: Joi.string()
-    .pattern(/^[0-9]+$/, { name: "phone number" })
+    .pattern(/^[0-9]+$/, { name: 'phone number' })
     .required(),
 
-  subscription: Joi.string().allow("free", "pro", "premium"),
+  subscription: Joi.string().allow('free', 'pro', 'premium'),
   password: Joi.string().min(8).max(24).required(),
-  token: Joi.string().max(100).empty("").default(""),
+  token: Joi.string().max(100).empty('').default(''),
 });
 
 const UpdateContactSchema = Joi.object({
@@ -32,12 +32,12 @@ const UpdateContactSchema = Joi.object({
 
   email: Joi.string().email({
     minDomainSegments: 2,
-    tlds: { allow: ["com", "ru", "ua", "net"] },
+    tlds: { allow: ['com', 'ru', 'ua', 'net'] },
   }),
-  phone: Joi.string().pattern(/^[0-9]+$/, { name: "phone number" }),
-  subscription: Joi.string().allow("free", "pro", "premium"),
+  phone: Joi.string().pattern(/^[0-9]+$/, { name: 'phone number' }),
+  subscription: Joi.string().allow('free', 'pro', 'premium'),
   password: Joi.string().min(8).max(24),
-  token: Joi.string().max(100).empty("").default(""),
+  token: Joi.string().max(100).empty('').default(''),
 });
 
 const validate = async (schema, data) => {
@@ -46,7 +46,7 @@ const validate = async (schema, data) => {
     const message = error.details.reduce((message, item) => {
       if (message) return `${message}, ${item.message}`;
       return `${item.message}`;
-    }, "");
+    }, '');
     throw new Error(message);
   }
 };

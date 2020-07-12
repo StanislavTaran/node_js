@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const { ObjectId } = require("mongoose").Types;
+const mongoose = require('mongoose');
+const { ObjectId } = require('mongoose').Types;
 
 const contactSchema = mongoose.Schema(
   {
@@ -29,7 +29,7 @@ const contactSchema = mongoose.Schema(
     },
     subscription: {
       type: String,
-      default: "free",
+      default: 'free',
       trim: true,
     },
     token: {
@@ -37,48 +37,48 @@ const contactSchema = mongoose.Schema(
       trim: true,
     },
   },
-  { versionKey: false }
+  { versionKey: false },
 );
 
 class Contact {
   constructor() {
-    this.contact = mongoose.model("Contact", contactSchema);
+    this.contact = mongoose.model('Contact', contactSchema);
   }
 
   getListContacts = async () => {
-    return (await this.contact.aggregate([{ $unset: ["password"] }])) || null;
+    return (await this.contact.aggregate([{ $unset: ['password'] }])) || null;
   };
 
-  getContactById = async (contactId) => {
+  getContactById = async contactId => {
     if (ObjectId.isValid(contactId)) {
       return await this.contact
         .findById(contactId)
-        .then((res) => res)
-        .catch((err) => {
+        .then(res => res)
+        .catch(err => {
           throw err;
         });
     }
-    throw { message: "Invalid contact id" };
+    throw { message: 'Invalid contact id' };
   };
 
-  removeContact = async (contactId) => {
+  removeContact = async contactId => {
     if (ObjectId.isValid(contactId)) {
       return await this.contact
         .findByIdAndDelete(contactId)
-        .then((res) => res)
-        .catch((err) => {
+        .then(res => res)
+        .catch(err => {
           console.log(err);
           throw err;
         });
     }
-    throw { message: "Invalid contact id" };
+    throw { message: 'Invalid contact id' };
   };
 
-  addContact = async (contact) => {
+  addContact = async contact => {
     return await this.contact
       .create(contact)
-      .then((docs) => docs)
-      .catch((error) => {
+      .then(docs => docs)
+      .catch(error => {
         throw error;
       });
   };
@@ -88,8 +88,8 @@ class Contact {
       .findByIdAndUpdate(contactId, newData, {
         new: true,
       })
-      .then((docs) => docs)
-      .catch((error) => {
+      .then(docs => docs)
+      .catch(error => {
         throw error;
       });
   };
