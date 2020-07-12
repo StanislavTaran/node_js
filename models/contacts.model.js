@@ -1,20 +1,36 @@
-const fs = require("fs").promises;
-const path = require("path");
+const mongoose = require("mongoose");
 
-const contactsPath = require("../db/contacts.json");
+const contactSchema = mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      minlength: 2,
+      maxlength: 20,
+    },
+    email: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    phone: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+  },
+  { versionKey: false }
+);
 
 class Contact {
-  constructor({ name, email, phone }, id) {
-    this.id = id;
-    this.name = name;
-    this.email = email;
-    this.phone = phone;
+  constructor() {
+    this.contact = mongoose.model("Contact", contactSchema);
   }
 }
 
-const getListContacts = async () => {
-  const contacts = await fs
-    .readFile(contactsPath, "utf-8")
+const getListContacts = async (query = {}) => {
+  await this.contact
+    .find(query)
     .then((res) => {
       return JSON.parse(res);
     })
