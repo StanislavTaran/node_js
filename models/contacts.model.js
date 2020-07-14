@@ -53,7 +53,7 @@ class Contact {
     if (ObjectId.isValid(contactId)) {
       return await this.contact
         .findById(contactId)
-        .then(res => res)
+        .then(doc => doc)
         .catch(err => {
           throw err;
         });
