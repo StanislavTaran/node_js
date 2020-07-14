@@ -14,14 +14,6 @@ const createServer = async () => {
     });
     console.log('Mongo Database connection successful!');
 
-    app.all('*', function (req, res, next) {
-      const origin = req.get('origin');
-      res.setHeader('Access-Control-Allow-Origin', '*');
-      res.setHeader('Access-Control-Allow-Headers', '*');
-      res.setHeader('Access-Control-Allow-Methods', '*');
-      next();
-    });
-
     app.use(cors());
 
     app.use(morgan('tiny'));

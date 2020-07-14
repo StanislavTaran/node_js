@@ -3,7 +3,9 @@ const contactsModel = require('../models/contacts.model');
 const getAllContacts = async (req, res) => {
   try {
     const allContacts = await contactsModel.getListContacts();
-    allContacts ? res.status(200).json(allContacts) : res.status(500).json(allContacts);
+    allContacts
+      ? res.status(200).json(allContacts)
+      : res.status(500).json({ message: 'Something went wrong, please try later.' });
   } catch (error) {
     res.status(400).json(error);
   }
@@ -25,7 +27,6 @@ const deleteContact = async (req, res) => {
   const { id } = req.params;
   try {
     const deletedContact = await contactsModel.removeContact(id);
-    console.log(deleteContact);
     deletedContact
       ? res.status(200).json({ message: `Contact succesful deleted!` })
       : res.status(404).json({ message: 'Contact not found!' });
