@@ -1,9 +1,9 @@
 const { Router } = require('express');
-const userController = require('../controllers/users.controller');
-const authMiddleware = require('../middlewares/auth.validation');
+const authController = require('../controllers/auth.controller');
+const authValidator = require('../middlewares/auth.validation');
 const authRouter = Router();
 
-authRouter.post('/signup', authMiddleware.validateSignUpMiddleware, userController.signupUser);
-authRouter.post('/login', authMiddleware.validateLogInMiddleware, userController.loginUser);
+authRouter.post('/signup', authValidator.validateSignUpMiddleware, authController.signupUser);
+authRouter.post('/login', authValidator.validateLogInMiddleware, authController.loginUser);
 
 module.exports = authRouter;

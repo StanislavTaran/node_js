@@ -11,48 +11,53 @@ const getUsers = async (req, res) => {
   }
 };
 
-const signupUser = async (req, res) => {
-  const data = req.body;
+const getUserById = async (req, res) => {
   try {
-    const { password } = data;
-    const hashPassword = await bcrypt.hash(password, +process.env.BCRYPT_SALT);
-    await userModel.createUser({ ...data, password: hashPassword });
-
-    res.status(201).json({ succes: true, message: 'User succesfully created!' });
+    const { id } = req.params;
+    const foundedUser = await userModel.getUserById();
+    foundedUser
+      ? res.status(200).json(foundedUser)
+      : res.status(400).json({ succes: false, message: 'User not found!' });
   } catch (error) {
     res.status(500).json(error);
-  } finally {
-    res.end();
   }
 };
 
-const loginUser = async (req, res) => {
+const deleteUserById = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    const currentUser = await userModel.getUsers({ email });
-    if (!currentUser.length) {
-      res.status(400).json({ succes: false, message: `User with email ${email} not found!` });
-      return;
-    }
-    const isEqualPassword = await bcrypt.compare(password, currentUser[0].password);
-
-    if (!isEqualPassword) {
-      res.status(400).json({ succes: false, message: `Incorrect password!` });
-      return;
-    }
-    const acces_token = await jwt.sign({ id: currentUser[0]._id }, process.env.PRIVATE_JWT_KEY, {
-      expiresIn: '1d',
-    });
-    res.json({ acces_token: `Bearer ${acces_token}` });
+    const { id } = req.params;
+    const deletedUser = await userModel.deleteUserById(id);
+    deletedUser
+      ? res.status(200).json({ message: `Contact succesful deleted!` })
+      : res.status(400).json({ message: 'Contact not found!' });
   } catch (error) {
     res.status(500).json(error);
-  } finally {
-    res.end();
+  }
+};
+const updateUserById = async (req, res) => {
+  const newUserFields = req.body;
+  const { id } = req.params;
+
+  if (!newUserFields) {
+    return res.status(400).json({ message: 'missing fields' });
+  }
+
+  try {
+    const result = await userModel.updateUser(id, newUserFields);
+
+    !result ? res.status(404).json({ message: 'User not found' }) : res.status(200).json(result);
+  } catch (error) {
+    if (error.name === 'MongoError' && error.code === 11000) {
+      return res.status(422).send({ succes: false, error });
+    }
+
+    return res.status(400).json(error);
   }
 };
 
 module.exports = {
   getUsers,
-  signupUser,
-  loginUser,
+  getUserById,
+  deleteUserById,
+  updateUserById,
 };
