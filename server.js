@@ -4,6 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const contactsRouter = require('./routes/contacts.router');
+const authRouter = require('./routes/auth.router');
 
 const createServer = async () => {
   try {
@@ -23,6 +24,7 @@ const createServer = async () => {
     app.use(express.json());
 
     app.use('/api/contacts', contactsRouter);
+    app.use('/auth', authRouter);
 
     app.listen(3000, () => console.log(`\x1B[33mServer listening on port: 3000... \x1b[0m`));
   } catch (e) {

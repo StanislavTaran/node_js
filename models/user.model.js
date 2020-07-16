@@ -1,16 +1,19 @@
 const mongoose = require('mongoose');
 const { ObjectId } = require('mongoose').Types;
 
-const userSchema = mongoose.Schema({
-  email: String,
-  password: String,
-  subscription: {
-    type: String,
-    enum: ['free', 'pro', 'premium'],
-    default: 'free',
+const userSchema = mongoose.Schema(
+  {
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    subscription: {
+      type: String,
+      enum: ['free', 'pro', 'premium'],
+      default: 'free',
+    },
+    token: String,
   },
-  token: String,
-});
+  { versionKey: false },
+);
 
 class User {
   constructor() {
