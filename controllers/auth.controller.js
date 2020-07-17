@@ -44,6 +44,9 @@ const loginUser = async (req, res) => {
     const acces_token = await jwt.sign({ id: currentUser[0]._id }, process.env.PRIVATE_JWT_KEY, {
       expiresIn: '1d',
     });
+
+    await userModel.updateUser(currentUser[0]._id, { token: acces_token });
+
     res.json({
       acces_token: `Bearer ${acces_token}`,
       user: {
@@ -52,7 +55,25 @@ const loginUser = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ succes: false, error });
+  } finally {
+    res.end();
+  }
+};
+
+const logoutUser = async (req, res) => {
+  try {
+    const { id } = req.currentUser;
+    const user = userModel.getUserById(id);
+    if (!user) {
+      res.status(401).json({ succes: false, message: 'Not authorized' });
+      return;
+    }
+
+    await userModel.updateUser(id, { token: '' });
+    res.status(204);
+  } catch (error) {
+    res.status(500).json({ succes: false, error });
   } finally {
     res.end();
   }
@@ -61,4 +82,5 @@ const loginUser = async (req, res) => {
 module.exports = {
   loginUser,
   signupUser,
+  logoutUser,
 };

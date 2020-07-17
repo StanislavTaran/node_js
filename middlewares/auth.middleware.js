@@ -5,7 +5,7 @@ const authMiddleware = async (req, res, next) => {
   try {
     const token = req.headers.authorization;
     if (!token) {
-      res.status(401).message({ succes: false, message: 'Not authorized' });
+      res.status(401).json({ succes: false, message: 'Not authorized' });
       return;
     }
     const parsedToken = token.replace('Bearer ', '');
@@ -14,7 +14,7 @@ const authMiddleware = async (req, res, next) => {
     req.currentUser = user;
     next();
   } catch (error) {
-    res.status(401).send('Invalid token');
+    res.status(401).json(error);
   }
 };
 

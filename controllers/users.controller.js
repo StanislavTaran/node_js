@@ -14,7 +14,7 @@ const getUsers = async (req, res) => {
 const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
-    const foundedUser = await userModel.getUserById();
+    const foundedUser = await userModel.getUserById(id);
     foundedUser
       ? res.status(200).json(foundedUser)
       : res.status(400).json({ succes: false, message: 'User not found!' });
@@ -34,18 +34,27 @@ const deleteUserById = async (req, res) => {
     res.status(500).json(error);
   }
 };
+
 const updateUserById = async (req, res) => {
-  const newUserFields = req.body;
+  let newUserFields = req.body;
   const { id } = req.params;
 
   if (!newUserFields) {
     return res.status(400).json({ message: 'missing fields' });
   }
 
+  if (newUserFields.password) {
+    const hashPassword = await bcrypt.hash(newUserFields.password, +process.env.BCRYPT_SALT);
+
+    newUserFields = { ...newUserFields, password: hashPassword };
+  }
+
   try {
     const result = await userModel.updateUser(id, newUserFields);
 
-    !result ? res.status(404).json({ message: 'User not found' }) : res.status(200).json(result);
+    !result
+      ? res.status(404).json({ message: 'User not found' })
+      : res.status(200).json({ succes: true, message: 'Updated!', user: result });
   } catch (error) {
     if (error.name === 'MongoError' && error.code === 11000) {
       return res.status(422).send({ succes: false, error });
@@ -55,9 +64,20 @@ const updateUserById = async (req, res) => {
   }
 };
 
+const getCurrentUser = async (req, res) => {
+  if (!req.currentUser) {
+    res.status(401).json({ succes: false, message: 'Not authorized' });
+    return;
+  }
+
+  const { email, subscription } = req.currentUser;
+  res.status(200).json({ email, subscription });
+};
+
 module.exports = {
   getUsers,
   getUserById,
   deleteUserById,
   updateUserById,
+  getCurrentUser,
 };

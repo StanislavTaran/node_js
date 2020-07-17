@@ -1,5 +1,4 @@
 const Joi = require('@hapi/joi');
-const { allow } = require('@hapi/joi');
 
 const createContactSchema = Joi.object({
   email: Joi.string()
@@ -11,7 +10,7 @@ const createContactSchema = Joi.object({
 
   subscription: Joi.string().allow('free', 'pro', 'premium'),
   password: Joi.string().min(8).max(24).required(),
-  token: Joi.string().max(100).empty('').default(''),
+  token: Joi.string().max(100).empty('').default(' '),
 });
 
 const UpdateContactSchema = Joi.object({

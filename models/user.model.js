@@ -10,7 +10,7 @@ const userSchema = mongoose.Schema(
       enum: ['free', 'pro', 'premium'],
       default: 'free',
     },
-    token: String,
+    token: { type: String },
   },
   { versionKey: false },
 );
@@ -30,15 +30,16 @@ class User {
   };
 
   getUserById = async id => {
-    if (ObjectId.isValid(contactId)) {
+    if (ObjectId.isValid(id)) {
       return await this.user
         .findById(id)
         .then(doc => doc)
         .catch(error => {
           throw error;
         });
+    } else {
+      throw { message: 'Invalid user id' };
     }
-    throw { message: 'Invalid user id' };
   };
 
   createUser = async data => {
@@ -51,7 +52,7 @@ class User {
   };
 
   deleteUserById = async id => {
-    if (ObjectId.isValid(contactId)) {
+    if (ObjectId.isValid(id)) {
       return await this.user
         .findByIdAndDelete(id)
         .then(res => res)
@@ -63,10 +64,12 @@ class User {
   };
 
   updateUser = async (id, data) => {
-    if (ObjectId.isValid(contactId)) {
-      this.user
+    if (ObjectId.isValid(id)) {
+      return await this.user
         .findByIdAndUpdate(id, data, { new: true })
-        .then(doc => doc)
+        .then(doc => {
+          return { email: doc.email, subscription: doc.subscription };
+        })
         .catch(error => {
           throw error;
         });

@@ -5,25 +5,25 @@ const {
   validateUpdateContactMiddleware,
 } = require('../middlewares/contacts.validation');
 
-const authMiddleware = require('../middlewares/auth.middleware');
+const { authMiddleware } = require('../middlewares/auth.middleware');
 const contactsRouter = Router();
 
-contactsRouter.get('/', authMiddleware.authMiddleware, contactsController.getAllContacts);
+contactsRouter.get('/', authMiddleware, contactsController.getAllContacts);
 
-contactsRouter.get('/:id', authMiddleware.authMiddleware, contactsController.getContactById);
+contactsRouter.get('/:id', authMiddleware, contactsController.getContactById);
 
 contactsRouter.post(
   '/',
-  authMiddleware.authMiddleware,
+  authMiddleware,
   validateCreateContactMiddleware,
   contactsController.addContact,
 );
 
-contactsRouter.delete('/:id', authMiddleware.authMiddleware, contactsController.deleteContact);
+contactsRouter.delete('/:id', authMiddleware, contactsController.deleteContact);
 
 contactsRouter.patch(
   '/:id',
-  authMiddleware.authMiddleware,
+  authMiddleware,
   validateUpdateContactMiddleware,
   contactsController.updateContact,
 );
