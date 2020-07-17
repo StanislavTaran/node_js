@@ -2,7 +2,12 @@ const contactsModel = require('../models/contacts.model');
 
 const getAllContacts = async (req, res) => {
   try {
-    const allContacts = await contactsModel.getListContacts();
+    const { sub, page, limit } = req.query;
+    const allContacts = await contactsModel.getListContacts(
+      sub ? { subscription: sub } : {},
+      page,
+      limit,
+    );
     allContacts
       ? res.status(200).json(allContacts)
       : res.status(400).json({ message: 'Contacts not found!' });
