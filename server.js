@@ -13,12 +13,13 @@ const createServer = async () => {
     await mongoose.connect(process.env.MONGODB_URI, {
       useUnifiedTopology: true,
       useNewUrlParser: true,
+      useFindAndModify: false,
     });
     console.log('Mongo Database connection successful!');
 
     app.use(cors());
 
-    app.use(morgan('tiny'));
+    app.use(morgan('combined'));
 
     app.use('/', express.static('public'));
 
