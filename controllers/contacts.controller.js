@@ -2,12 +2,17 @@ const contactsModel = require('../models/contacts.model');
 
 const getAllContacts = async (req, res) => {
   try {
-    const allContacts = await contactsModel.getListContacts();
+    const { sub, page, limit } = req.query;
+    const allContacts = await contactsModel.getListContacts(
+      sub ? { subscription: sub } : {},
+      page,
+      limit,
+    );
     allContacts
       ? res.status(200).json(allContacts)
-      : res.status(500).json({ message: 'Something went wrong, please try later.' });
+      : res.status(400).json({ message: 'Contacts not found!' });
   } catch (error) {
-    res.status(400).json(error);
+    res.status(500).json(error);
   }
 };
 
@@ -17,9 +22,9 @@ const getContactById = async (req, res) => {
     const foundContact = await contactsModel.getContactById(id);
     foundContact
       ? res.status(200).json(foundContact)
-      : res.status(404).json({ message: 'Contact not found!' });
+      : res.status(400).json({ message: 'Contact not found!' });
   } catch (error) {
-    res.status(400).json(error);
+    res.status(500).json(error);
   }
 };
 
@@ -29,9 +34,9 @@ const deleteContact = async (req, res) => {
     const deletedContact = await contactsModel.removeContact(id);
     deletedContact
       ? res.status(200).json({ message: `Contact succesful deleted!` })
-      : res.status(404).json({ message: 'Contact not found!' });
+      : res.status(400).json({ message: 'Contact not found!' });
   } catch (error) {
-    res.status(400).json(error);
+    res.status(500).json(error);
   }
 };
 

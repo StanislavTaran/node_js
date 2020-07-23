@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 const { ObjectId } = require('mongoose').Types;
 
 const contactSchema = mongoose.Schema(
@@ -40,20 +41,31 @@ const contactSchema = mongoose.Schema(
   { versionKey: false },
 );
 
+contactSchema.plugin(mongoosePaginate);
+
 class Contact {
   constructor() {
     this.contact = mongoose.model('Contact', contactSchema);
   }
 
-  getListContacts = async () => {
-    return (await this.contact.aggregate([{ $unset: ['password'] }])) || null;
+  getListContacts = async (query, page = 1, limit = 20) => {
+    const options = {
+      page,
+      limit,
+    };
+    return await this.contact
+      .paginate(query, options)
+      .then(docs => docs)
+      .catch(err => {
+        throw err;
+      });
   };
 
   getContactById = async contactId => {
     if (ObjectId.isValid(contactId)) {
       return await this.contact
         .findById(contactId)
-        .then(res => res)
+        .then(doc => doc)
         .catch(err => {
           throw err;
         });
