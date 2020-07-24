@@ -22,6 +22,7 @@ const createServer = async () => {
     app.use(morgan('combined'));
 
     app.use('/', express.static('public'));
+    app.use('/images', express.static('./static/images'));
 
     app.use(express.json());
 
