@@ -1,6 +1,5 @@
 const userModel = require('../models/user.model');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 
 const getUsers = async (req, res) => {
   try {
@@ -21,6 +20,15 @@ const getUserById = async (req, res) => {
   } catch (error) {
     res.status(500).json(error);
   }
+};
+const getCurrentUser = async (req, res) => {
+  if (!req.currentUser) {
+    res.status(401).json({ succes: false, message: 'Not authorized' });
+    return;
+  }
+
+  const { email, subscription } = req.currentUser;
+  res.status(200).json({ email, subscription });
 };
 
 const deleteUserById = async (req, res) => {
@@ -64,14 +72,13 @@ const updateUserById = async (req, res) => {
   }
 };
 
-const getCurrentUser = async (req, res) => {
-  if (!req.currentUser) {
-    res.status(401).json({ succes: false, message: 'Not authorized' });
-    return;
-  }
-
-  const { email, subscription } = req.currentUser;
-  res.status(200).json({ email, subscription });
+const updateUserAvatar = async (req, res) => {
+  const { id } = req.currentUser;
+  const { path } = req.file;
+  const avatarPath = `${process.env.HOME_URL}/${path.split('\\').slice(1).join('/')}`;
+  await userModel.updateUser(id, { avatarUrl: avatarPath });
+  res.json({ avatarUrl: avatarPath });
+  res.end();
 };
 
 module.exports = {
@@ -80,4 +87,8 @@ module.exports = {
   deleteUserById,
   updateUserById,
   getCurrentUser,
+  updateUserAvatar,
 };
+
+//todo
+// написать апишку + допилить нормальные ответы на запрос по аватару

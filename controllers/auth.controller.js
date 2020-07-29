@@ -13,6 +13,7 @@ const signupUser = async (req, res) => {
       succes: true,
       message: 'User succesfully created!',
       user: {
+        avatarUrl: createdUser.avatarUrl,
         email: createdUser.email,
         subscription: createdUser.subscription,
       },
@@ -52,6 +53,7 @@ const loginUser = async (req, res) => {
       user: {
         email: currentUser[0].email,
         subscription: currentUser[0].subscription,
+        avatarUrl: currentUser[0].avatarUrl,
       },
     });
   } catch (error) {

@@ -12,6 +12,7 @@ const authMiddleware = async (req, res, next) => {
     const data = await jwt.verify(parsedToken, process.env.PRIVATE_JWT_KEY);
     const user = await userModel.getUserById(data.id);
     req.currentUser = user;
+
     next();
   } catch (error) {
     res.status(401).json(error);
