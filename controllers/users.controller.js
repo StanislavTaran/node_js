@@ -73,12 +73,17 @@ const updateUserById = async (req, res) => {
 };
 
 const updateUserAvatar = async (req, res) => {
-  const { id } = req.currentUser;
-  const { path } = req.file;
-  const avatarPath = `${process.env.HOME_URL}/${path.split('\\').slice(1).join('/')}`;
-  await userModel.updateUser(id, { avatarUrl: avatarPath });
-  res.json({ avatarUrl: avatarPath });
-  res.end();
+  try {
+    const { id } = req.currentUser;
+    const { path } = req.file;
+    const avatarPath = `${process.env.HOME_URL}/${path.split('\\').slice(1).join('/')}`;
+    await userModel.updateUser(id, { avatarUrl: avatarPath });
+    res.status(200).json({ succes: true, avatarUrl: avatarPath });
+  } catch (error) {
+    res.status(400).json(error);
+  } finally {
+    res.end();
+  }
 };
 
 module.exports = {
@@ -89,6 +94,3 @@ module.exports = {
   getCurrentUser,
   updateUserAvatar,
 };
-
-//todo
-// написать апишку + допилить нормальные ответы на запрос по аватару
