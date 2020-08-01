@@ -81,8 +81,6 @@ const updateUserAvatar = async (req, res) => {
     res.status(200).json({ succes: true, avatarUrl: avatarPath });
   } catch (error) {
     res.status(400).json(error);
-  } finally {
-    res.end();
   }
 };
 
