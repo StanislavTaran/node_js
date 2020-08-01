@@ -1,0 +1,5 @@
+MONGODB_URI = ...(URI)
+BCRYPT_SALT = ...(number)
+PRIVATE_JWT_KEY = ...
+
+HOME_URL = ...(for example : http://localhost:3000)

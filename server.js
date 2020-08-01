@@ -7,6 +7,8 @@ const contactsRouter = require('./routes/contacts.router');
 const authRouter = require('./routes/auth.router');
 const usersRouter = require('./routes/users.router');
 
+const { createAvatar } = require('./utils/avatar/avatar-generator');
+
 const createServer = async () => {
   try {
     const app = express();
@@ -22,6 +24,7 @@ const createServer = async () => {
     app.use(morgan('combined'));
 
     app.use('/', express.static('public'));
+    app.use('/images', express.static('./public/images'));
 
     app.use(express.json());
 
