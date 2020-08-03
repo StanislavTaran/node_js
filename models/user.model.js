@@ -12,6 +12,7 @@ const userSchema = mongoose.Schema(
       default: 'free',
     },
     token: { type: String },
+    verificationToken: { type: String },
   },
   { versionKey: false },
 );
@@ -72,6 +73,19 @@ class User {
         .then(doc => {
           return { email: doc.email, subscription: doc.subscription, avatarUrl: doc.avatarUrl };
         })
+        .catch(error => {
+          throw error;
+        });
+    } else {
+      throw { message: 'Invalid user id' };
+    }
+  };
+
+  verifyEmail = async id => {
+    if (ObjectId.isValid(id)) {
+      return await this.user
+        .findByIdAndUpdate(id, { $unset: { verificationToken: 1 } }, { new: true })
+        .then(res => res)
         .catch(error => {
           throw error;
         });
