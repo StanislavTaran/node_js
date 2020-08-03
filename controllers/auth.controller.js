@@ -31,8 +31,6 @@ const signupUser = async (req, res) => {
       return res.status(409).send({ succes: false, message: 'Email in use', error });
     }
     res.status(500).json(error);
-  } finally {
-    res.end();
   }
 };
 
@@ -98,8 +96,6 @@ const logoutUser = async (req, res) => {
     res.status(204);
   } catch (error) {
     res.status(500).json({ succes: false, error });
-  } finally {
-    res.end();
   }
 };
 

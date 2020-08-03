@@ -15,8 +15,8 @@ const verifyMail = async user => {
     to: user.email,
     subject: 'Contacts app verify',
     html: `
-      Please verify your email.
-      <a href=${process.env.HOME_URL}/auth/verify/${user.verificationToken}>Verify</a>
+      Hello,it's Phonebook develop team.
+      <a href=${process.env.HOME_URL}/auth/verify/${user.verificationToken}>Please confirm your email to finish registration.</a>
     `,
   });
 };
