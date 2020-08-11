@@ -12,6 +12,7 @@ authRouter.post(
   avatarUploader,
   authController.signupUser,
 );
+authRouter.get('/verify/:verificationToken', authController.verifyEmail);
 authRouter.post('/login', authValidator.validateLogInMiddleware, authController.loginUser);
 authRouter.post('/logout', authMiddleware, authController.logoutUser);
 
